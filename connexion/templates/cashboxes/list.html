@@ -1,0 +1,18 @@
+<h2>Liste des produits</h2>
+<table>
+    <tr>
+        <th>Noms</th>
+        <th>Actions</th>
+    </tr>
+
+    {% for sale in sales %}
+    <tr>
+        <td>{{ sale.amount }}</td>
+        <td>
+            <button>Supprimer</button>
+            <button>Modifier</button>
+        </td>
+    </tr>
+    {% endfor %}
+    
+</table>

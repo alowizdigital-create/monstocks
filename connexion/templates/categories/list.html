@@ -1,0 +1,207 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+a:visited {
+    color: inherit;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+body{
+    font-family: Arial, sans-serif;
+    background:#f5f6f8;
+}
+
+/* HEADER */
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:10px 20px;
+    background:#fff;
+    border-bottom:1px solid #ddd;
+    flex-wrap:wrap;
+    gap:10px;
+}
+
+.left a {
+    margin-right: 20px;
+    color: #444;
+    font-weight: 500;
+}
+
+/* SEARCH */
+.search{
+    display:flex;
+    align-items:center;
+    gap:5px;
+    background:#fff;
+    border:1px solid #ddd;
+    padding:5px 10px;
+    border-radius:6px;
+    width:300px;
+}
+
+.search input{
+    border:none;
+    outline:none;
+    width:100%;
+}
+
+/* GRID */
+.products{
+    padding:20px;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:15px;
+}
+
+/* CARD */
+.card{
+    position: relative;
+    background:#fff;
+    border:1px solid #ddd;
+    border-radius:6px;
+    padding:15px;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.card:hover{
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+}
+
+.quantity-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: white;
+    padding: 5px 8px;
+    font-size: 12px;
+    border-radius: 6px;
+    font-weight: bold;
+}
+
+.bg-success { background: #00b894; }
+.bg-warning { background: #f39c12; }
+.bg-danger  { background: #e74c3c; }
+
+.product-name{
+    font-weight:bold;
+    margin-bottom:5px;
+}
+
+.price{
+    color:#555;
+    font-size:14px;
+}
+
+/* TABLE */
+.table-container{
+    padding:20px;
+}
+
+table{
+    width:100%;
+    border-collapse: collapse;
+    background:#fff;
+}
+
+th, td{
+    padding:10px;
+    border:1px solid #ddd;
+    text-align:left;
+}
+
+th{
+    background:#f0f0f0;
+}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+    .products{grid-template-columns:repeat(2,1fr);}
+}
+@media(max-width:600px){
+    .products{grid-template-columns:1fr;}
+    .search{width:100%;}
+    .header{flex-direction:column;align-items:stretch;}
+}
+/* BOUTONS */
+button{
+    padding:6px 10px;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:13px;
+    transition:0.2s;
+}
+
+/* DELETE */
+button[type="submit"]{
+    background:#e74c3c;
+    color:white;
+}
+
+button[type="submit"]:hover{
+    background:#c0392b;
+}
+</style>
+
+<!-- HEADER -->
+<div class="header">
+    <div class="left">
+        <a href="{% url 'category_create' %}">Nouveau</a>
+    </div>
+
+    <div class="search">
+        🔍
+        <input type="text" id="search" placeholder="Rechercher..." autocomplete="off">
+    </div>
+
+    <div class="right">
+        <span id="product-count">{{ products|length }} produit(s)</span>
+    </div>
+</div>
+
+
+<!-- CATEGORIES -->
+<div class="table-container">
+    <h2>Liste des catégories</h2>
+
+    <table>
+        <tr>
+            <th>Nom</th>
+            <th>Actions</th>
+        </tr>
+
+        {% for category in categories %}
+        <tr>
+            <td>{{ category.name }}</td>
+            <td>
+
+                <form method="POST" action="{% url 'category_delete' category.id %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" onclick="return confirm('Supprimer cette catégorie ?')">
+                        Supprimer
+                    </button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+<!-- SCRIPT SEARCH -->
+
+
+{% endblock %}

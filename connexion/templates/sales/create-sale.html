@@ -1,0 +1,189 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>POS Vente</title>
+
+<style>
+body { margin:0; font-family:Arial; background:#f5f5f5; }
+
+.pos {
+    display:flex;
+    height:100vh;
+}
+
+/* PANIER */
+.cart {
+    width:30%;
+    background:#fff;
+    padding:20px;
+    border-right:1px solid #ddd;
+    display:flex;
+    flex-direction:column;
+}
+
+.cart-items {
+    flex:1;
+    overflow:auto;
+}
+
+.cart-item {
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:10px;
+}
+
+.total {
+    font-size:20px;
+    font-weight:bold;
+    margin-top:15px;
+}
+
+.pay-btn {
+    background:#7c4dff;
+    color:#fff;
+    border:none;
+    padding:15px;
+    border-radius:8px;
+    margin-top:15px;
+    cursor:pointer;
+}
+
+/* PRODUITS */
+.products {
+    width:70%;
+    padding:20px;
+}
+
+.search {
+    width:100%;
+    padding:10px;
+    margin-bottom:15px;
+}
+
+.grid {
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:15px;
+}
+
+.card {
+    background:#fff;
+    padding:10px;
+    border-radius:10px;
+    text-align:center;
+    cursor:pointer;
+}
+
+.card img {
+    width:100%;
+    height:80px;
+    object-fit:cover;
+}
+
+.card:hover {
+    background:#eee;
+}
+</style>
+
+</head>
+<body>
+
+<div class="pos">
+
+    <!-- PANIER -->
+    <div class="cart">
+        <h3>Commande</h3>
+
+        <div id="cart-items" class="cart-items"></div>
+
+        <div class="total">
+            Total : <span id="total">0</span> FCFA
+        </div>
+
+        <button class="pay-btn" onclick="checkout()">Paiement</button>
+    </div>
+
+    <!-- PRODUITS -->
+    <div class="products">
+
+        <input type="text" class="search" id="search" placeholder="Rechercher...">
+
+        <div class="grid" id="product-list">
+            {% for product in products %}
+            <div class="card"
+                 onclick="addToCart('{{product.id}}','{{product.name}}',{{product.price}})">
+                <img src="{{ product.image.url }}">
+                <p>{{ product.name }}</p>
+                <small>{{ product.price }} FCFA</small>
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+let cart = [];
+
+// Ajouter produit
+function addToCart(id, name, price) {
+    let item = cart.find(p => p.id === id);
+
+    if (item) {
+        item.qty++;
+    } else {
+        cart.push({id, name, price, qty:1});
+    }
+
+    renderCart();
+}
+
+// Afficher panier
+function renderCart() {
+    let container = document.getElementById("cart-items");
+    container.innerHTML = "";
+
+    let total = 0;
+
+    cart.forEach(item => {
+        let subtotal = item.price * item.qty;
+        total += subtotal;
+
+        container.innerHTML += `
+            <div class="cart-item">
+                <span>${item.name} x${item.qty}</span>
+                <span>${subtotal} FCFA</span>
+            </div>
+        `;
+    });
+
+    document.getElementById("total").innerText = total;
+}
+
+// Paiement
+function checkout() {
+
+    fetch("{% url 'create_sale' %}", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": "{{ csrf_token }}"
+        },
+        body: JSON.stringify({cart: cart})
+    })
+    .then(res => res.json())
+    .then(data => {
+        alert("Vente enregistrée !");
+        cart = [];
+        renderCart();
+    });
+}
+
+</script>
+
+</body>
+</html>

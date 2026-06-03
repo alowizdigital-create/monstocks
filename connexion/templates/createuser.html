@@ -1,0 +1,22 @@
+<h2>Créer un utilisateur</h2>
+
+<form method="post">
+    {% csrf_token %}
+
+    <div>
+        <label>Nom d'utilisateur</label>
+        {{ form.username }}
+    </div>
+
+    <div>
+        <label>Mot de passe</label>
+        {{ form.password }}
+    </div>
+
+    <div>
+        <label>Rôle</label>
+        {{ form.role }}
+    </div>
+
+    <button type="submit">Créer</button>
+</form>

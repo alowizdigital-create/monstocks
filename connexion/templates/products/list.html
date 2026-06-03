@@ -1,0 +1,272 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+
+
+a {
+    text-decoration: none; /* ❌ enlève le soulignement */
+    color: inherit;        /* ❌ enlève la couleur bleue */
+}
+
+
+a:visited {
+    color: inherit;        /* évite le violet */
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+body{
+    font-family: Arial, sans-serif;
+    background:#f5f6f8;
+}
+
+/* HEADER */
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:10px 20px;
+    background:#fff;
+    border-bottom:1px solid #ddd;
+    flex-wrap:wrap;
+    gap:10px;
+}
+
+.left a {
+    margin-right: 20px;
+    text-decoration: none;
+    color: #444;
+    font-weight: 500;
+}
+
+/* SEARCH */
+.search{
+    display:flex;
+    align-items:center;
+    gap:5px;
+    background:#fff;
+    border:1px solid #ddd;
+    padding:5px 10px;
+    border-radius:6px;
+    width:300px;
+}
+
+.search input{
+    border:none;
+    outline:none;
+    width:100%;
+}
+
+/* GRID */
+.products{
+    padding:20px;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:15px;
+}
+
+/* CARD */
+.card{
+    position: relative;
+    background:#fff;
+    border:1px solid #ddd;
+    border-radius:6px;
+    padding:15px;
+
+    padding-top:75px;
+
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.card:hover{
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+}
+
+.quantity-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: white;
+    padding: 5px 8px;
+    font-size: 12px;
+    border-radius: 6px;
+    font-weight: bold;
+}
+
+.bg-success { background: #00b894; }
+.bg-warning { background: #f39c12; }
+.bg-danger  { background: #e74c3c; }
+
+.product-name{
+    font-weight:bold;
+    margin-bottom:5px;
+}
+
+.price{
+    color:#555;
+    font-size:14px;
+}
+
+
+.product-image{
+    position:absolute;
+
+    top:10px;
+    left:10px;
+
+    width:55px;
+    height:55px;
+
+    border-radius:50%;
+
+    object-fit:cover;
+
+    border:2px solid #eee;
+
+    background:#f5f5f5;
+
+    box-shadow:0 2px 6px rgba(0,0,0,0.08);
+}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+    .products{grid-template-columns:repeat(2,1fr);}
+}
+@media(max-width:600px){
+    .products{grid-template-columns:1fr;}
+    .search{width:100%;}
+    .header{flex-direction:column;align-items:stretch;}
+}
+</style>
+
+<div class="header">
+    
+    <div class="left">
+        <a href="{% url 'product_create' %}">Nouveau</a>
+    </div>
+
+    <div class="search">
+        🔍
+        <input type="text" id="search" placeholder="Rechercher..." autocomplete="off">
+    </div>
+
+    <div class="right">
+        <span id="product-count">{{ products|length }} produit(s)</span>
+    </div>
+</div>
+
+<!-- PRODUITS -->
+<div class="products" id="products-container">
+
+{% for product in products %}
+<a href="{% url 'product_edit' product.uuid %}" class="card-link">
+
+<div class="card">
+
+    <div class="quantity-badge
+        {% if product.quantity == 0 %}
+            bg-danger
+        {% elif product.quantity < 10 %}
+            bg-warning
+        {% else %}
+            bg-success
+        {% endif %}
+    ">
+        {{ product.quantity }}
+    </div>
+
+    {% if product.image %}
+        <img
+            src="{{ product.image.url }}"
+            class="product-image"
+        >
+    {% endif %}
+
+    <div class="product-name">
+        {{ product.name }}
+    </div>
+
+    <div class="price">
+        Prix : {{ product.sale_price }} FCFA
+    </div>
+
+</div>
+
+</a>
+{% endfor %}
+
+</div>
+
+<script>
+let timeout = null;
+
+const input = document.getElementById("search");
+const container = document.getElementById("products-container");
+const count = document.getElementById("product-count");
+
+input.addEventListener("keyup", function(){
+
+    let query = this.value;
+
+    clearTimeout(timeout);
+
+    timeout = setTimeout(() => {
+
+        fetch(`/products/?q=${query}`, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+
+            // ✅ VIDER
+            container.innerHTML = "";
+
+            // ✅ UPDATE COUNT
+            count.innerText = data.length + " produit(s)";
+
+            if(data.length === 0){
+                container.innerHTML = "<p>Aucun produit trouvé</p>";
+                return;
+            }
+
+            data.forEach(product => {
+
+                let badgeClass = "bg-success";
+
+                if(product.quantity == 0){
+                    badgeClass = "bg-danger";
+                }else if(product.quantity < 10){
+                    badgeClass = "bg-warning";
+                }
+
+                container.innerHTML += `
+                    <a href="/products/${product.uuid}/edit" class="card-link">
+                        <div class="card">
+
+                            <div class="quantity-badge ${badgeClass}">
+                                ${product.quantity}
+                            </div>
+
+                            <div class="product-name">${product.name}</div>
+                            <div class="price">Prix : ${product.sale_price} FCFA</div>
+
+                        </div>
+                    </a>
+                `;
+            });
+
+        });
+
+    }, 300);
+});
+
+</script>
+
+{% endblock %}

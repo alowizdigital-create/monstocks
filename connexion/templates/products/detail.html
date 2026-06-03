@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+    font-family: Arial;
+    background:#f5f6f8;
+    padding:20px;
+}
+
+.card{
+    background:#fff;
+    padding:20px;
+    border-radius:10px;
+    max-width:500px;
+    margin:auto;
+}
+
+
+.title{
+    font-size:24px;
+    margin-bottom:10px;
+}
+
+.badge{
+    display:inline-block;
+    padding:5px 10px;
+    border-radius:6px;
+    color:white;
+}
+
+.bg-success{background:#00b894;}
+.bg-warning{background:#f39c12;}
+.bg-danger{background:#e74c3c;}
+</style>
+</head>
+
+<body>
+
+<a href="{% url 'product_detail' product.uuid %}" class="card-link">
+    
+</a>
+
+</body>
+</html>

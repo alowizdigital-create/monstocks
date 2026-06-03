@@ -1,0 +1,119 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% if product %}Modifier{% else %}Créer{% endif %} Produit</title>
+
+<style>
+/* --- Styles identiques à ce que tu avais --- */
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: Arial,sans-serif; background:#f6f7f9; color:#333; }
+.topbar { display:flex; justify-content:space-between; padding:10px 20px; background:white; border-bottom:1px solid #ddd; }
+.menu a { margin-right:20px; text-decoration:none; color:#444; font-weight:500; }
+.right { display:flex; align-items:center; gap:10px; }
+.alert { background:#30e289; color:rgb(46, 45, 45); padding:5px 10px; border-radius:6px; font-size:12px; display:none; margin-bottom:15px; }
+.container { padding:20px; }
+.header { display:flex; justify-content:space-between; align-items:center; }
+.btn { padding:8px 15px; border-radius:6px; border:none; cursor:pointer; transition:0.2s; }
+.btn-primary { background:#7c4dff; color:white; }
+.btn-primary:hover { background:#6a3de8; }
+.btn-light { background:#eee; }
+.card { position:relative; background:white; border-radius:10px; margin-top:15px; padding:25px; }
+.title { font-size:28px; border:none; width:100%; outline:none; margin-bottom:10px; }
+.image-upload { position:absolute; top:20px; right:20px; }
+.image-upload img { width:120px; height:120px; object-fit:cover; border-radius:10px; border:1px solid #ddd; cursor:pointer; transition:0.2s; }
+.image-upload img:hover { opacity:0.8; }
+.tabs { display:flex; border-bottom:2px solid #eee; margin-top:20px; }
+.tab { padding:10px 20px; cursor:pointer; }
+.tab.active { border-bottom:3px solid #7c4dff; font-weight:bold; }
+.grid { display:grid; grid-template-columns:1fr 1fr; gap:30px; margin-top:20px; }
+.form-group { margin-bottom:15px; }
+label { font-size:14px; color:#555; display:block; margin-bottom:5px; }
+input, select, textarea { width:100%; padding:8px; border:1px solid #ccc; border-radius:6px; }
+.stats { display:flex; gap:20px; }
+.stat-box { background:#fafafa; padding:10px; border-radius:8px; text-align:center; width:120px; }
+.footer { margin-top:20px; }
+@media(max-width:768px){ .grid { grid-template-columns:1fr; } .image-upload { position:static; margin-bottom:15px; } }
+</style>
+</head>
+
+<body>
+
+<div class="topbar">
+    <div class="menu">
+        <a href="{% url 'pos' %}">Ventes</a>
+        <a href="{% url 'product_list' %}">Produits</a>
+        <a href="#">Configuration</a>
+    </div>
+    <div class="right">
+        <span>GBENDA</span>
+    </div>
+</div>
+
+<div class="container">
+    <div class="header">
+        <button class="btn btn-light">Nouveau</button>
+        <div class="stats">
+              Vente(s)<br><b>{{ ventes_count }}</b>
+            <div class="stat-box">Montant<br><b> {{ amountCashbox }}</b></div>
+        </div>
+    </div>
+
+    <div class="card">
+
+        <!-- ALERT -->
+        <div class="alert" id="alert-box"></div>
+
+        <form id="post-form" method="POST">
+            {% csrf_token %}
+
+            <h5>Nom du categorie</h5>
+            <input class="title" id="name" name="name"  placeholder="ex: Informatique" required>
+
+            <div class="tabs">
+                <div class="tab active" >Notes internes </div>
+            </div>
+
+            <div class="form-group note" id="note" style="margin-top:20px;">
+                <textarea name="notes" placeholder="Cette note est pour usage interne seulement.">{{ product.notes|default:'' }}</textarea>
+            </div>
+
+            <div class="footer">
+                <button class="btn btn-primary" type="submit">{% if product %}Modifier{% else %}Enregistrer{% endif %}</button>
+                <button class="btn btn-light" type="button" onclick="window.location.href='{% url 'product_list' %}'">Annuler</button>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+
+<script src="{% static 'js/jquery.min.js' %}"></script>
+<script type="text/javascript">
+$(document).on('submit', '#post-form', function(e) 
+{
+    e.preventDefault();
+    let formData = new FormData(this); 
+    let url = "{% url 'category_create' %}";
+
+    $.ajax({
+        type: 'POST',
+        url: url,
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response){
+            $('#alert-box').text('categorie enregistrée avec succès !').show().fadeOut(3000);
+            $('#post-form')[0].reset();
+        },
+        error: function(xhr, status, error){
+            $('#alert-box').text('Erreur : ' + error).show();
+        }
+    });
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,5 @@
+<form method="POST">
+    {% csrf_token %}
+    <input type="text" name="name" placeholder="Nom de la caisse" required>
+    <button type="submit">Enregistrer</button>
+</form>

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Facture {{ sale.invoice_number }}</title>
+
+<style>
+
+/* RESET */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #fff;
+}
+
+/* CONTENEUR */
+.invoice-box {
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+}
+
+/* TITRE */
+h2 {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+/* INFOS */
+.info {
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+/* TABLE */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+th, td {
+    padding: 8px;
+    text-align: center;
+}
+
+th {
+    border-bottom: 2px solid #000;
+}
+
+td {
+    border-bottom: 1px solid #ddd;
+}
+
+/* TOTAL */
+.total {
+    text-align: right;
+    font-size: 18px;
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+/* BOUTON */
+.btn-print {
+    margin-top: 20px;
+    text-align: center;
+}
+
+/* ===================== */
+/* 🧾 MODE TICKET */
+/* ===================== */
+
+.ticket {
+    width: 80mm; /* 58mm si besoin */
+    margin: auto;
+    font-size: 12px;
+}
+
+.ticket h2 {
+    font-size: 16px;
+}
+
+.ticket .info {
+    font-size: 12px;
+}
+
+.ticket table,
+.ticket th,
+.ticket td {
+    border: none;
+}
+
+.ticket th {
+    border-bottom: 1px dashed #000;
+}
+
+.ticket td {
+    border-bottom: 1px dashed #ddd;
+}
+
+.ticket .total {
+    border-top: 1px dashed #000;
+    padding-top: 10px;
+    font-size: 14px;
+}
+
+/* ===================== */
+/* IMPRESSION */
+/* ===================== */
+
+@media print {
+
+    body {
+        margin: 0;
+        padding: 0;
+    }
+
+    .btn-print {
+        display: none;
+    }
+
+    .invoice-box {
+        border: none;
+        padding: 0;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- 🔥 MODE AUTO : ticket si ?type=ticket -->
+<div class="invoice-box {% if request.GET.type == 'ticket' %}ticket{% endif %}">
+
+    <h2>FACTURE</h2>
+
+    <div class="info">
+        <p><strong>N° :</strong> {{ sale.invoice_number }}</p>
+        <p><strong>Date :</strong> {{ sale.created_at|date:"d/m/Y H:i" }}</p>
+        <p><strong>Vendeur :</strong> {{ sale.created_by.username }}</p>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Produit</th>
+                <th>Qté</th>
+                <th>Unité</th>
+                <th>PU</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ item.product.name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.product.unit.name }}</td>
+                <td>{{ item.price }}</td>
+                <td>{{ item.total }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="total">
+        TOTAL : {{ sale.amount }} FCFA
+    </div>
+
+    <div class="btn-print">
+        <button onclick="window.print()">🖨️ Imprimer</button>
+    </div>
+
+</div>
+
+<script>
+// 🔥 impression automatique
+window.onload = function() {
+    window.print();
+};
+
+// 🔥 fermeture après impression
+window.onafterprint = function() {
+    window.close();
+};
+</script>
+
+</body>
+</html>

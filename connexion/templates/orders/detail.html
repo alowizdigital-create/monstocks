@@ -1,0 +1,108 @@
+<h2>
+    Commande de :  {{ order.customer }}
+</h2>
+
+<div style="margin-bottom:20px;">
+
+    <p>
+        <strong>Téléphone :</strong>
+        {{ order.phone }}
+    </p>
+
+    <p>
+        <strong>Quartier :</strong>
+        {{ order.address }}
+    </p>
+   <p>
+    <strong>Statut :</strong>
+
+    {% if order.status == 'pending' %}
+        <span class="status pending">
+            En attente
+        </span>
+    {% elif order.status == 'send' %}
+
+        <span class="status processing">
+            En cours
+        </span>
+
+    {% else %}
+
+        <span class="status delivered">
+            Livrée
+        </span>
+
+    {% endif %}
+</p>
+
+    <p>
+        <strong>Montant :</strong>
+        {{ order.total }} FCFA
+    </p>
+    <p>
+        <strong>Note :</strong>
+        {{ order.note }}
+    </p>
+
+</div>
+
+<table border="1" width="100%" cellspacing="0" cellpadding="10">
+
+    <tr>
+
+        <th>Image</th>
+
+        <th>Produit</th>
+
+        <th>Qté</th>
+
+        <th>Prix</th>
+
+        <th>Sous-total</th>
+
+      
+
+    </tr>
+
+    {% for item in items %}
+
+    <tr>
+
+        <td>
+
+            {% if item.product.image %}
+
+                <img
+                    src="{{ item.product.image.url }}"
+                    width="70"
+                    height="70"
+                    style="object-fit:cover;border-radius:8px;"
+                >
+
+            {% endif %}
+
+        </td>
+
+        <td>
+            {{ item.product.name }}
+        </td>
+
+        <td>
+            {{ item.quantity }}
+        </td>
+
+        <td>
+            {{ item.price }} FCFA
+        </td>
+
+        <td>
+            {{ item.subtotal }} FCFA
+        </td>
+        
+     
+
+    </tr>
+
+    {% endfor %}
+
+</table>

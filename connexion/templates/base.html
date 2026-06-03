@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Produit{% endblock %}</title>
+<style>
+/* RESET */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f6f7f9;
+    color: #333;
+}
+
+/* NAVBAR */
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background: white;
+    border-bottom: 1px solid #ddd;
+}
+
+.menu a {
+    margin-right: 20px;
+    text-decoration: none;
+    color: #444;
+    font-weight: 500;
+}
+
+.right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.alert {
+    background: #ff4d4f;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+}
+
+/* PAGE */
+.container {
+    padding: 20px;
+}
+
+/* HEADER */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btn {
+    padding: 8px 15px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-primary {
+    background: #7c4dff;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #6a3de8;
+}
+
+.btn-light {
+    background: #eee;
+}
+
+/* CARD */
+.card {
+    position: relative;
+    background: white;
+    border-radius: 10px;
+    margin-top: 15px;
+    padding: 25px;
+}
+
+/* TITLE */
+.title {
+    font-size: 28px;
+    border: none;
+    width: 100%;
+    outline: none;
+    margin-bottom: 10px;
+}
+
+/* IMAGE */
+.image-upload {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+.image-upload img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.image-upload img:hover {
+    opacity: 0.8;
+}
+
+/* TAGS */
+.tags {
+    margin: 10px 0;
+}
+
+.tag {
+    display: inline-block;
+    background: #00b894;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 6px;
+    margin-right: 10px;
+    font-size: 12px;
+}
+
+/* TABS */
+.tabs {
+    display: flex;
+    border-bottom: 2px solid #eee;
+    margin-top: 20px;
+}
+
+.tab {
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.tab.active {
+    border-bottom: 3px solid #7c4dff;
+    font-weight: bold;
+}
+
+/* GRID */
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-top: 20px;
+}
+
+/* FORM */
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    font-size: 14px;
+    color: #555;
+    display: block;
+    margin-bottom: 5px;
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+/* STATS */
+.stats {
+    display: flex;
+    gap: 20px;
+}
+
+.stat-box {
+    background: #fafafa;
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+    width: 120px;
+}
+
+/* FOOTER */
+.footer {
+    margin-top: 20px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .image-upload {
+        position: static;
+        margin-bottom: 15px;
+    }
+}
+</style>
+
+<style>
+/* --- Styles identiques à ce que tu avais --- */
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: Arial,sans-serif; background:#f6f7f9; color:#333; }
+.topbar { display:flex; justify-content:space-between; padding:10px 20px; background:white; border-bottom:1px solid #ddd; }
+.menu a { margin-right:20px; text-decoration:none; color:#444; font-weight:500; }
+.right { display:flex; align-items:center; gap:10px; }
+.alert { background:#30e289; color:rgb(46, 45, 45); padding:5px 10px; border-radius:6px; font-size:12px; display:none; margin-bottom:15px; }
+.container { padding:20px; }
+.header { display:flex; justify-content:space-between; align-items:center; }
+.btn { padding:8px 15px; border-radius:6px; border:none; cursor:pointer; transition:0.2s; }
+.btn-primary { background:#7c4dff; color:white; }
+.btn-primary:hover { background:#6a3de8; }
+.btn-light { background:#eee; }
+.card { position:relative; background:white; border-radius:10px; margin-top:15px; padding:25px; }
+.title { font-size:28px; border:none; width:100%; outline:none; margin-bottom:10px; }
+.image-upload { position:absolute; top:20px; right:20px; }
+.image-upload img { width:120px; height:120px; object-fit:cover; border-radius:10px; border:1px solid #ddd; cursor:pointer; transition:0.2s; }
+.image-upload img:hover { opacity:0.8; }
+.tabs { display:flex; border-bottom:2px solid #eee; margin-top:20px; }
+.tab { padding:10px 20px; cursor:pointer; }
+.tab.active { border-bottom:3px solid #7c4dff; font-weight:bold; }
+.grid { display:grid; grid-template-columns:1fr 1fr; gap:30px; margin-top:20px; }
+.form-group { margin-bottom:15px; }
+label { font-size:14px; color:#555; display:block; margin-bottom:5px; }
+input, select, textarea { width:100%; padding:8px; border:1px solid #ccc; border-radius:6px; }
+.stats { display:flex; gap:20px; }
+.stat-box { background:#fafafa; padding:10px; border-radius:8px; text-align:center; width:120px; }
+.footer { margin-top:20px; }
+@media(max-width:768px){ .grid { grid-template-columns:1fr; } .image-upload { position:static; margin-bottom:15px; } }
+
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 20px;
+    color: #333;
+}
+
+.menu {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.menu a {
+    color: #333;
+    text-decoration: none;
+}
+
+.config {
+    position: relative;
+}
+
+.submenu {
+    display: none;
+    position: absolute;
+    top: 30px;
+    left: 0;
+    background: white;
+    color: black;
+    padding: 10px;
+    border-radius: 5px;
+    min-width: 150px;
+}
+
+.submenu a {
+    display: block;
+    padding: 5px;
+    color: black;
+}
+
+.submenu a:hover {
+    background: #eee;
+}
+</style>
+</head>
+
+{% load static %}
+
+<body>
+
+<!-- NAVBAR -->
+<div class="topbar">
+    <div class="menu">
+        <!-- <a href="{% url 'pos' %}">Ventes</a> -->
+        <a href="{% url 'order_list' %}">commandes</a>
+        <a href="{% url 'product_list' %}">Produits</a>
+        <!-- <a href="products/list.html">Produits</a> -->
+       <div class="config">
+            <a href="#" onclick="toggleMenu(event)">Configuration</a>
+
+            <div class="submenu" id="submenu">
+                <a href="{% url 'unit_list' %}">Unité</a>
+                <a href="{% url 'category_list' %}">Catégorie</a>
+                <a href="{% url 'user_list' %}">Collaborateur</a>
+            </div>
+        </div>
+    </div>
+    
+
+
+    <div class="right">
+        <span> {{ user.username }}</span>
+    </div>
+</div>
+
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="header">
+        <button class="btn btn-light" style="background-color: #eee;"></button>
+
+        <div class="stats">
+            <div class="stat-box">
+                Vente<br><b> {{ ventes_count }}</b>
+            </div>
+            <div class="stat-box">
+              Montant<br><b>{{ total_ventes }} FCFA</b>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTENU PRINCIPAL -->
+    {% block content %}
+    {% endblock %}
+
+</div>
+
+</body>
+</html>
+
+<script>
+function toggleMenu(e) {
+    e.preventDefault();
+    e.stopPropagation(); // 🔥 empêche la fermeture immédiate
+
+    let menu = document.getElementById("submenu");
+    menu.style.display = (menu.style.display === "block") ? "none" : "block";
+}
+
+// ✅ Fermer quand on clique ailleurs
+document.addEventListener("click", function(e) {
+    let menu = document.getElementById("submenu");
+    let config = document.querySelector(".config");
+
+    if (!config.contains(e.target)) {
+        menu.style.display = "none";
+    }
+});
+</script>

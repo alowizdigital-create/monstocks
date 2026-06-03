@@ -1,0 +1,132 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Produit</title>
+
+<style>
+
+/* --- Styles identiques à ce que tu avais --- */
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: Arial,sans-serif; background:#f6f7f9; color:#333; }
+.topbar { display:flex; justify-content:space-between; padding:10px 20px; background:white; border-bottom:1px solid #ddd; }
+.menu a { margin-right:20px; text-decoration:none; color:#444; font-weight:500; }
+.right { display:flex; align-items:center; gap:10px; }
+.alert { background:#30e289; color:rgb(46, 45, 45); padding:5px 10px; border-radius:6px; font-size:12px; display:none; margin-bottom:15px; }
+.container { padding:20px; }
+.header { display:flex; justify-content:space-between; align-items:center; }
+.btn { padding:8px 15px; border-radius:6px; border:none; cursor:pointer; transition:0.2s; }
+.btn-primary { background:#7c4dff; color:white; }
+.btn-primary:hover { background:#6a3de8; }
+.btn-light { background:#eee; }
+.card { position:relative; background:white; border-radius:10px; margin-top:15px; padding:25px; }
+.title { font-size:28px; border:none; width:100%; outline:none; margin-bottom:10px; }
+.image-upload { position:absolute; top:20px; right:20px; }
+.image-upload img { width:120px; height:120px; object-fit:cover; border-radius:10px; border:1px solid #ddd; cursor:pointer; transition:0.2s; }
+.image-upload img:hover { opacity:0.8; }
+.tabs { display:flex; border-bottom:2px solid #eee; margin-top:20px; }
+.tab { padding:10px 20px; cursor:pointer; }
+.tab.active { border-bottom:3px solid #7c4dff; font-weight:bold; }
+.grid { display:grid; grid-template-columns:1fr 1fr; gap:30px; margin-top:20px; }
+.form-group { margin-bottom:15px; }
+label { font-size:14px; color:#555; display:block; margin-bottom:5px; }
+input, select, textarea { width:100%; padding:8px; border:1px solid #ccc; border-radius:6px; }
+.stats { display:flex; gap:20px; }
+.stat-box { background:#fafafa; padding:10px; border-radius:8px; text-align:center; width:120px; }
+.footer { margin-top:20px; }
+@media(max-width:768px){ .grid { grid-template-columns:1fr; } .image-upload { position:static; margin-bottom:15px; } }
+
+
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div class="topbar">
+    <div class="menu">
+        <a href="{% url 'pos' %}">Ventes</a>
+        <a href="{% url 'product_list' %}">Produits</a>
+        <!-- <a href="products/list.html">Produits</a> -->
+        <a href="#">Configuration</a>
+        <!-- <a href="#">Analyse</a>
+        <a href="#">Configuration</a> --> 
+    </div>
+
+    <div class="right">
+        <!-- <div class="alert">En attente d'activation</div> -->
+        <span>{{user.username}}</span>
+    </div>
+</div>
+
+<div class="container">
+    <!-- HEADER -->
+    <div class="header">
+        <button class="btn btn-light">Nouveau</button>
+        <div class="stats">
+           
+            <div class="stat-box">
+                Vente(s)<br><b>{{ ventes_count }}</b>
+            </div>
+             <div class="stat-box">
+                Montant En Fcfa<br><b> {{ amountCashbox }}</b>
+            </div>
+        </div>
+    </div>
+
+    <!-- CARD -->
+    <div class="card">
+        
+<form action="" method="POST" name="post-form">
+{% csrf_token %}
+        <!-- IMAGE -->
+        <div class="image-upload">
+            <label for="imageInput">
+                <img id="preview" src="https://via.placeholder.com/120" alt="image produit">
+            </label>
+            <input type="file"  hidden>
+        </div>
+        <h5>Produit</h5>
+        <!-- TITLE -->
+        <input class="title" id="name" name="name" placeholder="par ex. Iphone 17">
+        <!-- GENERAL -->
+        <div id="general" class="tab-content">
+            <div class="grid">
+                <div>
+                   <div class="form-group">
+                        <label>Catégorie</label>
+                        <select name="product" id="product" required>
+                            {% for product in products %}
+                             <option value="{{product.id}}">{{product.name}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <div class="form-group">
+                        <label>Quantité</label>
+                        <input type="text" name="quantity" id="quantity" placeholder="ex : 19">
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- NOTES -->
+        <div class="form-group note" id="note" style="margin-top: 20px;">
+            <label>Notes internes</label>
+            <textarea placeholder="Cette note est pour usage interne seulement."></textarea>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer">
+            <button class="btn btn-primary" type="submit">Enregistrer</button>
+            <button class="btn btn-light">Annuler</button>
+        </div>
+</form>
+    </div>
+</div>
+
