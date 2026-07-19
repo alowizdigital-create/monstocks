@@ -46,6 +46,12 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://zweey.com",
+    "https://www.zweey.com",
+]
+
+
 # Application definition
 
 INSTALLED_APPS = [
