@@ -43,7 +43,10 @@ SECRET_KEY = 'django-insecure-test'
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = [
+    "zweey.com",
+    "www.zweey.com",
+]
 
 
 CSRF_TRUSTED_ORIGINS = [
