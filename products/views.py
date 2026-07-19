@@ -229,3 +229,18 @@ def product_edit(request, uuid):
 
 
 
+@login_required
+def product_delete(request, uuid):
+    product = get_object_or_404(Product, uuid=uuid)
+
+    if request.method == "POST":
+        product.delete()
+        messages.success(request, "Le produit a été supprimé avec succès.")
+        return redirect('product_list')
+
+    return render(request, 'products/delete.html', {
+        'product': product
+    })
+
+
+
