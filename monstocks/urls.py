@@ -14,7 +14,6 @@ urlpatterns = [
     path('create_user/', views.create_user, name='create_user'),
     path('user_list/', views.user_list, name='user_list'),
     path('products/', include('products.urls')),  # 👈 AJOUTER ÇA
-    path("products/delete/<int:id>/", product_delete, name="product_delete"),
     path('sales/', include('sales.urls')),  # 👈 AJOUTER ÇA
     path('orders/', include('orders.urls')),  # 👈 AJOUTER ÇA
 ]
