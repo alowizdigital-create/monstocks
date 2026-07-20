@@ -13,5 +13,6 @@ urlpatterns = [
     path("units/delete/<int:id>/", unit_delete, name="unit_delete"),
     path('<uuid:uuid>/', product_detail, name='product_detail'),
     path('<uuid:uuid>/edit/', product_edit, name='product_edit'),
+    path("<uuid:uuid>/delete/", product_delete, name="product_delete"),
 ]
 
