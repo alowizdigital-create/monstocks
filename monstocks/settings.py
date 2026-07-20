@@ -118,7 +118,7 @@ WSGI_APPLICATION = 'monstocks.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('DB_NAME', 'zweeydb'),
+        'NAME': os.getenv('DB_NAME', 'zweeybd'),
         'USER': os.getenv('DB_USER', 'zweeyuser'),
         'PASSWORD': os.getenv('DB_PASSWORD', 'Jeanpierre236'),
         'HOST': os.getenv('DB_HOST', 'stocks-zweey-uhezrn'),
